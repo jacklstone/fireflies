@@ -4,7 +4,7 @@ import cv2
 from math import sin, pi, ceil
 import numpy as np
 def createLocations(x, y, z, threshold, r):
-  return np.array([[int(random.uniform(0, x)), int(random.uniform(0, y)), 0, random.uniform((1-periodRange/2)*threshold,(1+periodRange/2)*threshold)] for t in range(z)])
+    return np.array([[int(random.uniform(0, x)), int(random.uniform(0, y)), 0, random.uniform((1-periodRange/2)*threshold,(1+periodRange/2)*threshold)] for t in range(z)])
 
 def inverseDistance(t, j, loc, disDict):
 	if t > j: t,j = j,t
@@ -18,8 +18,8 @@ def inverseDistance(t, j, loc, disDict):
 def drawImage(y, x, loc, r):
 	img=np.zeros((x,y,3)).astype(np.uint8)
 	for c in loc:
-	  value = (1 - c[2] / c[3])
-	  for i in range(r-1, -1, -1):
+		value = (1 - c[2] / c[3])
+		for i in range(r-1, -1, -1):
 			temp = value - .04*i
 			if temp > 0:
 				color = (255*2*(temp-0.5), 255, 255) if temp > 0.5 else (0, 255 * 2 * temp, 255 * 2 * temp)
@@ -64,16 +64,17 @@ def run(x, y, z, r, b, alpha, threshold, stillness, maxMove, moveDuration, epsil
 			if minPeriod/maxPeriod > convergenceFactor: 
 				print("Periods equal")
 				flag = 1
-
+		popped = [(loc[t][2] + (threshold-loc[t][2]) * alpha) > loc[t][3] for t in range(len(loc))]
+		
 		for t in range(len(loc)):
 			if (movementPhase[t] != 0):
 				loc[t][0] = (loc[t][0] + (movementPhase[t] * (target[t][0] - loc[t][0])) //moveDuration) % x
 				loc[t][1] = (loc[t][1] + (movementPhase[t] * (target[t][1] - loc[t][1])) //moveDuration) % y
 				movementPhase[t] = (movementPhase[t] + 1) % moveDuration
 			loc[t][2]+=(threshold-loc[t][2]) * alpha
-			if loc[t][2] > loc[t][3]:
+			if popped[t]:
 				for j in range(len(loc)):
-					if t != j:
+					if t != j and not popped[j]:
 						invDis = inverseDistance(t,j,loc,disDict)
 						if flag:
 							loc[j][2] += (b * invDis * (loc[j][2]/loc[j][3]))
@@ -89,7 +90,7 @@ y = 700
 z = 100
 r = 5
 
-b = 100 / z
+b = 1.0
 alpha = pi/20
 threshold = 2*pi
 periodRange = .4
