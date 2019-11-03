@@ -1,6 +1,5 @@
 # fireflies
 
-Fireflies that move around and sync their flashes through modelling as pulse coupled oscillators.
-They start with different periods but affect the periods and phases of other fireflies witha small change inversely proportional to the distance between them. After some time they completely synchronize, lighting up the night in unison.
+Modelled after the bugs that light up the night, these fireflies learn from their neighbors to synchronize their flashes.
 
 ![Fireflies](https://github.com/jaclynstone/fireflies/blob/master/Fireflies.gif)
